@@ -24,17 +24,18 @@
   --color-primary-800: oklch(30% 0.16 250);
   --color-primary-900: oklch(22% 0.1 250);
 
-  --color-surface: oklch(14% 0.02 250);
-  --color-surface-elevated: oklch(18% 0.02 250);
-  --color-surface-border: oklch(26% 0.03 250);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-surface-border: var(--surface-border);
+  --color-surface-hover: var(--surface-hover);
 
-  --color-text-primary: oklch(95% 0.01 250);
-  --color-text-secondary: oklch(70% 0.03 250);
-  --color-text-muted: oklch(50% 0.03 250);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
 
-  --color-success: oklch(65% 0.2 145);
-  --color-warning: oklch(75% 0.18 80);
-  --color-danger: oklch(60% 0.22 25);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
 
   /* ── Typography ────────────────────────────────────────────── */
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
@@ -84,6 +85,32 @@
 
 /* ── Base layer overrides ──────────────────────────────────────────────────── */
 @layer base {
+  :root {
+    --surface: oklch(99% 0.01 250);
+    --surface-elevated: oklch(100% 0 0);
+    --surface-border: oklch(90% 0.03 250);
+    --surface-hover: oklch(95% 0.02 250);
+    --text-primary: oklch(20% 0.01 250);
+    --text-secondary: oklch(40% 0.02 250);
+    --text-muted: oklch(60% 0.03 250);
+    --success: oklch(55% 0.15 145);
+    --warning: oklch(70% 0.15 80);
+    --danger: oklch(55% 0.2 25);
+  }
+
+  .dark {
+    --surface: oklch(14% 0.02 250);
+    --surface-elevated: oklch(18% 0.02 250);
+    --surface-border: oklch(26% 0.03 250);
+    --surface-hover: oklch(22% 0.02 250);
+    --text-primary: oklch(95% 0.01 250);
+    --text-secondary: oklch(70% 0.03 250);
+    --text-muted: oklch(50% 0.03 250);
+    --success: oklch(65% 0.2 145);
+    --warning: oklch(75% 0.18 80);
+    --danger: oklch(60% 0.22 25);
+  }
+
   *, *::before, *::after {
     box-sizing: border-box;
   }

@@ -17,6 +17,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
+import LandingPage from './pages/LandingPage';
 import { AppLayout } from './components/layout/AppLayout';
 import DashboardPage from './pages/DashboardPage';
 import OwnedDocumentsPage from './pages/OwnedDocumentsPage';
@@ -28,6 +29,10 @@ import { queryClient } from './lib/query-client';
 
 const router = createBrowserRouter([
   // Public routes
+  {
+    path: '/',
+    element: <LandingPage />,
+  },
   {
     path: '/login',
     element: <LoginPage />,
@@ -44,11 +49,6 @@ const router = createBrowserRouter([
       {
         element: <AppLayout />,
         children: [
-          {
-            // Redirect bare root to /documents
-            index: true,
-            element: <Navigate to="/documents" replace />,
-          },
           {
             path: '/documents',
             element: <DashboardPage />,
@@ -84,14 +84,24 @@ const router = createBrowserRouter([
 
 // ─── Root ─────────────────────────────────────────────────────────────────────
 
+import { ThemeProvider } from './contexts/ThemeContext';
+
 export default function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <Toaster position="bottom-right" />
-        <RouterProvider router={router} />
-        {import.meta.env.DEV && <ReactQueryDevtools />}
-      </AuthProvider>
-    </QueryClientProvider>
+    <ThemeProvider defaultTheme="system">
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <RouterProvider router={router} />
+          <Toaster
+            position="bottom-right"
+            toastOptions={{
+              className: 'bg-surface-elevated text-text-primary border border-surface-border shadow-lg',
+              duration: 4000,
+            }}
+          />
+        </AuthProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }

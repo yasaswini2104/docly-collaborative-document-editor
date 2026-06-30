@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router';
-import { LayoutDashboard, FileText, Users, X } from 'lucide-react';
+import { LayoutDashboard, FileText, Users, X, Sun, Moon } from 'lucide-react';
+import { useTheme } from '../../contexts/ThemeContext';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -7,6 +8,7 @@ interface SidebarProps {
 }
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
+  const { theme, setTheme } = useTheme();
   const navItems = [
     { label: 'Dashboard', path: '/documents', icon: LayoutDashboard },
     { label: 'Owned Documents', path: '/documents/owned', icon: FileText },
@@ -24,7 +26,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 transform border-r border-surface-border bg-surface-elevated transition-transform duration-200 ease-in-out lg:static lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 w-64 transform flex flex-col border-r border-surface-border bg-surface-elevated transition-transform duration-200 ease-in-out lg:translate-x-0 ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -40,7 +42,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           </button>
         </div>
 
-        <nav className="p-4 space-y-1">
+        <nav className="p-4 space-y-1 flex-1">
           {navItems.map((item) => {
             const Icon = item.icon;
             return (
@@ -63,6 +65,25 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             );
           })}
         </nav>
+
+        <div className="p-4 border-t border-surface-border">
+          <button
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors"
+          >
+            {theme === 'dark' ? (
+              <>
+                <Sun className="h-5 w-5" />
+                Light Mode
+              </>
+            ) : (
+              <>
+                <Moon className="h-5 w-5" />
+                Dark Mode
+              </>
+            )}
+          </button>
+        </div>
       </aside>
     </>
   );

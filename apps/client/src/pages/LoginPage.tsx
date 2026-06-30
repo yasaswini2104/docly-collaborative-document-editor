@@ -6,7 +6,7 @@
  * and the user is redirected to the page they originally tried to reach.
  */
 import { type FormEvent, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router';
+import { useNavigate, useLocation, Navigate } from 'react-router';
 import { useMutation } from '@tanstack/react-query';
 import { Eye, EyeOff, FileText, User } from 'lucide-react';
 import { apiClient } from '../lib/axios';
@@ -56,7 +56,7 @@ const DEMO_ACCOUNTS = [
 export default function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login } = useAuth();
+  const { user, login } = useAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -64,6 +64,10 @@ export default function LoginPage() {
 
   // Redirect back to the originally requested page after login
   const from = (location.state as LocationState | null)?.from?.pathname ?? '/documents';
+
+  if (user) {
+    return <Navigate to="/documents" replace />;
+  }
 
   const loginMutation = useMutation({
     mutationFn: (credentials: { email: string; password: string }) =>

@@ -1,5 +1,5 @@
 import { type FormEvent, useState } from 'react';
-import { useNavigate, Link } from 'react-router';
+import { useNavigate, Link, Navigate } from 'react-router';
 import { useMutation } from '@tanstack/react-query';
 import { apiClient } from '../lib/axios';
 import { useAuth } from '../hooks/useAuth';
@@ -37,13 +37,17 @@ function Spinner() {
 
 export default function SignupPage() {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { user, login } = useAuth();
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [validationError, setValidationError] = useState<string | null>(null);
+
+  if (user) {
+    return <Navigate to="/documents" replace />;
+  }
 
   const signupMutation = useMutation({
     mutationFn: (credentials: { name: string; email: string; password: string }) =>
