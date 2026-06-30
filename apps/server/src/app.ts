@@ -30,6 +30,11 @@ export function createApp(): Express {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
   });
 
+  // Root endpoint to prevent 404 confusion
+  app.get('/', (_req: Request, res: Response) => {
+    res.json({ message: 'Docly API is running smoothly!' });
+  });
+
   // ── Feature routers ────────────────────────────────────────────────────────
   app.use('/api/auth', authRouter);
   app.use('/api/documents', documentsRouter);
