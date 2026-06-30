@@ -50,7 +50,6 @@ export function useCreateDocument() {
       // Prime the cache for the detail view so the editor loads instantly
       queryClient.setQueryData(documentDetailKeys.detail(data.id), data);
     },
-    },
   });
 }
 
