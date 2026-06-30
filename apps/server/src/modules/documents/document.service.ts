@@ -1,4 +1,5 @@
 import { prisma } from '../../lib/prisma.js';
+import { Prisma } from '@prisma/client';
 import { DEFAULT_TIPTAP_CONTENT } from './document.schema.js';
 import type { CreateDocumentInput, UpdateDocumentInput, Role } from './document.schema.js';
 
@@ -51,7 +52,7 @@ export async function createDocument(ownerId: string, data: CreateDocumentInput)
   return prisma.document.create({
     data: {
       title: data.title,
-      content: data.content ?? DEFAULT_TIPTAP_CONTENT,
+      content: (data.content ?? DEFAULT_TIPTAP_CONTENT) as Prisma.InputJsonValue,
       ownerId,
     },
     select: documentFullSelect,
@@ -101,7 +102,7 @@ export async function updateDocument(id: string, data: UpdateDocumentInput) {
     where: { id },
     data: {
       ...(data.title !== undefined && { title: data.title }),
-      ...(data.content !== undefined && { content: data.content }),
+      ...(data.content !== undefined && { content: data.content as Prisma.InputJsonValue }),
     },
     select: documentFullSelect,
   });

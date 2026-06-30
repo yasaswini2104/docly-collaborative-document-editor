@@ -19,8 +19,8 @@ const jsonObjectSchema = z.record(z.string(), z.unknown());
 
 export const createDocumentSchema = z.object({
   title: z
-    .string({ required_error: 'Title is required' })
-    .min(1, 'Title cannot be empty')
+    .string()
+    .min(1, 'Title is required')
     .max(255, 'Title must be 255 characters or fewer'),
   content: jsonObjectSchema.optional(),
 });

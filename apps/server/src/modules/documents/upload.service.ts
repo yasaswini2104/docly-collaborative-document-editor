@@ -4,13 +4,13 @@ import z from 'zod';
 export const tipTapNodeSchema: z.ZodType<any> = z.lazy(() =>
   z.object({
     type: z.string(),
-    attrs: z.record(z.any()).optional(),
+    attrs: z.record(z.string(), z.any()).optional(),
     content: z.array(tipTapNodeSchema).optional(),
     marks: z
       .array(
         z.object({
           type: z.string(),
-          attrs: z.record(z.any()).optional(),
+          attrs: z.record(z.string(), z.any()).optional(),
         })
       )
       .optional(),
@@ -40,7 +40,7 @@ export function parseTextToTipTapJSON(text: string) {
     if (headingMatch) {
       return {
         type: 'heading',
-        attrs: { level: headingMatch[1].length },
+        attrs: { level: headingMatch[1]?.length ?? 1 },
         content: [{ type: 'text', text: headingMatch[2] }],
       };
     }

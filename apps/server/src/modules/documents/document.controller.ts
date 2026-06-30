@@ -29,7 +29,7 @@ import {
 
 // ─── Utility ──────────────────────────────────────────────────────────────────
 
-function zodError(res: Response, issues: { path: (string | number)[]; message: string }[]) {
+function zodError(res: Response, issues: { path: (string | number | symbol)[]; message: string }[]) {
   res.status(400).json({
     error: 'Validation failed',
     details: issues.map((i) => ({ field: i.path.join('.'), message: i.message })),
