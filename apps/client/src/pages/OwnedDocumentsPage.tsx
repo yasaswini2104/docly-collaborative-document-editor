@@ -1,9 +1,13 @@
-import { Plus } from 'lucide-react';
+import { Plus, Loader2 } from 'lucide-react';
+import { useNavigate } from 'react-router';
 import { useDocuments } from '../hooks/useDocuments';
+import { useCreateDocument } from '../hooks/useDocument';
 import { DocumentList } from '../components/documents/DocumentList';
 
 export default function OwnedDocumentsPage() {
+  const navigate = useNavigate();
   const { data, isLoading, isError } = useDocuments();
+  const { mutate: createDocument, isPending: isCreating } = useCreateDocument();
 
   if (isLoading) {
     return (
@@ -23,6 +27,14 @@ export default function OwnedDocumentsPage() {
 
   const owned = data?.owned ?? [];
 
+  const handleCreateDocument = () => {
+    createDocument('Untitled Document', {
+      onSuccess: (newDoc) => {
+        navigate(`/documents/${newDoc.id}`);
+      },
+    });
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -33,9 +45,11 @@ export default function OwnedDocumentsPage() {
           </p>
         </div>
         <button
-          className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-primary-500 to-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:from-primary-400 hover:to-primary-500 hover:shadow-md"
+          onClick={handleCreateDocument}
+          disabled={isCreating}
+          className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-primary-500 to-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:from-primary-400 hover:to-primary-500 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <Plus className="h-4 w-4" />
+          {isCreating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
           New Document
         </button>
       </div>

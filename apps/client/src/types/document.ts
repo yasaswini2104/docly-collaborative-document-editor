@@ -6,6 +6,12 @@ export interface DocumentListItem {
   updatedAt: string;
 }
 
+export interface Document extends DocumentListItem {
+  content: any;
+  isOwner: boolean;
+  effectiveRole: 'OWNER' | 'EDITOR' | 'VIEWER';
+}
+
 export interface DocumentsResponse {
   owned: DocumentListItem[];
   shared: DocumentListItem[];

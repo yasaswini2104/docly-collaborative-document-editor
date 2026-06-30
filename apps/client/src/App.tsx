@@ -19,6 +19,7 @@ import { AppLayout } from './components/layout/AppLayout';
 import DashboardPage from './pages/DashboardPage';
 import OwnedDocumentsPage from './pages/OwnedDocumentsPage';
 import SharedDocumentsPage from './pages/SharedDocumentsPage';
+import EditorPage from './pages/EditorPage';
 import { queryClient } from './lib/query-client';
 
 // ─── Router ───────────────────────────────────────────────────────────────────
@@ -55,6 +56,15 @@ const router = createBrowserRouter([
             element: <SharedDocumentsPage />,
           },
         ],
+      },
+      {
+        // Editor page is outside the sidebar layout for a full-screen feel
+        path: '/documents/:id',
+        element: (
+          <div className="min-h-dvh bg-surface p-4 sm:p-6 lg:p-8">
+            <EditorPage />
+          </div>
+        ),
       },
     ],
   },

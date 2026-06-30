@@ -9,6 +9,7 @@
  */
 
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 @theme {
   /* ── Color palette ─────────────────────────────────────────── */
