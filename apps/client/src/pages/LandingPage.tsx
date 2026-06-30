@@ -53,7 +53,7 @@ export default function LandingPage() {
       {/* Main Content */}
       <main className="flex-1">
         {/* 2. Hero */}
-        <section className="px-6 py-24 sm:px-8 sm:py-32 lg:px-12 text-center max-w-4xl mx-auto">
+        <section className="px-6 pt-24 pb-16 sm:px-8 sm:pt-32 sm:pb-20 lg:px-12 text-center max-w-4xl mx-auto">
           <h1 className="text-4xl font-bold tracking-tight text-text-primary sm:text-5xl lg:text-6xl">
             Write and share documents, together.
           </h1>
@@ -77,23 +77,23 @@ export default function LandingPage() {
         </section>
 
         {/* 3. Feature strip */}
-        <section className="px-6 pb-24 sm:px-8 sm:pb-32 lg:px-12 max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-left">
-            <div>
+        <section className="px-6 pb-24 pt-0 sm:px-8 sm:pb-32 lg:px-12 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
+            <div className="bg-surface-elevated border border-surface-border rounded-xl p-6 flex flex-col">
               <Type className="h-8 w-8 text-primary-500 mb-4" />
               <h3 className="text-lg font-semibold text-text-primary mb-2">Rich Text Editing</h3>
               <p className="text-text-secondary">
                 Bold, italic, headings, and lists in a clean writing surface.
               </p>
             </div>
-            <div>
+            <div className="bg-surface-elevated border border-surface-border rounded-xl p-6 flex flex-col">
               <Share2 className="h-8 w-8 text-primary-500 mb-4" />
               <h3 className="text-lg font-semibold text-text-primary mb-2">Easy Sharing</h3>
               <p className="text-text-secondary">
                 Share documents with teammates and control view or edit access.
               </p>
             </div>
-            <div>
+            <div className="bg-surface-elevated border border-surface-border rounded-xl p-6 flex flex-col">
               <Upload className="h-8 w-8 text-primary-500 mb-4" />
               <h3 className="text-lg font-semibold text-text-primary mb-2">File Import</h3>
               <p className="text-text-secondary">
@@ -106,12 +106,12 @@ export default function LandingPage() {
 
       {/* 4. Footer */}
       <footer className="border-t border-surface-border px-6 py-8 sm:px-8">
-        <div className="mx-auto max-w-7xl flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="mx-auto max-w-7xl flex flex-col md:flex-row justify-between items-center gap-4 mb-4">
           <div className="text-sm font-medium text-text-primary">
             Docly — Collaborative Document Editor
           </div>
           <a
-            href="https://github.com"
+            href="https://github.com/yasaswini2104"
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm text-text-secondary hover:text-text-primary transition-colors"
@@ -121,6 +121,9 @@ export default function LandingPage() {
           <div className="text-sm text-text-secondary">
             &copy; 2026 Docly
           </div>
+        </div>
+        <div className="text-center text-xs text-text-muted mt-4">
+          Implemented by Yasaswini
         </div>
       </footer>
     </div>
