@@ -47,8 +47,8 @@ function Spinner() {
 
 // ─── Demo Accounts ────────────────────────────────────────────────────────────
 const DEMO_ACCOUNTS = [
-  { role: 'Owner', email: 'owner@demo.com', password: 'password123', icon: FileText },
-  { role: 'Collaborator', email: 'user@demo.com', password: 'password123', icon: User },
+  { role: 'Alice', email: 'alice@example.com', password: 'alice-password-123', icon: FileText },
+  { role: 'Bob', email: 'bob@example.com', password: 'bob-password-123', icon: User },
 ];
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
@@ -146,7 +146,7 @@ export default function LoginPage() {
                 id="login-email"
                 type="email"
                 autoComplete="email"
-                placeholder="owner@demo.com"
+                placeholder="alice@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={loginMutation.isPending}
