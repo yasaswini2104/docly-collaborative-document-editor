@@ -20,8 +20,8 @@ export default function DashboardPage() {
 
   const owned = data?.owned ?? [];
   const shared = data?.shared ?? [];
-  const recentOwned = owned.slice(0, 4);
-  const recentShared = shared.slice(0, 4);
+  const recentOwned = owned.slice(0, 3);
+  const recentShared = shared.slice(0, 3);
 
   const handleCreateDocument = () => {
     createDocument('Untitled Document', {

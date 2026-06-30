@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import { prisma } from '../../lib/prisma.js';
 import { signToken } from '../../lib/jwt.js';
-import type { LoginInput } from './auth.schema.js';
+import type { LoginInput, RegisterInput } from './auth.schema.js';
 
 // ─── Domain error ────────────────────────────────────────────────────────────
 
@@ -53,5 +53,37 @@ export async function authenticateUser(input: LoginInput): Promise<AuthResult> {
   return {
     token,
     user: { id: user.id, email: user.email, name: user.name },
+  };
+}
+
+/**
+ * Register a new user and return a signed JWT + public user data.
+ */
+export async function registerUser(input: RegisterInput): Promise<AuthResult> {
+  const existingUser = await prisma.user.findUnique({
+    where: { email: input.email },
+  });
+
+  if (existingUser) {
+    throw new AuthError('Email is already registered.', 409);
+  }
+
+  const SALT_ROUNDS = 12; // Matching the seed script
+  const passwordHash = await bcrypt.hash(input.password, SALT_ROUNDS);
+
+  const newUser = await prisma.user.create({
+    data: {
+      name: input.name,
+      email: input.email,
+      passwordHash,
+    },
+    select: { id: true, email: true, name: true },
+  });
+
+  const token = signToken({ sub: newUser.id, email: newUser.email, name: newUser.name });
+
+  return {
+    token,
+    user: { id: newUser.id, email: newUser.email, name: newUser.name },
   };
 }

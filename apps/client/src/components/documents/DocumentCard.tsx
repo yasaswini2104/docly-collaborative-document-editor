@@ -38,18 +38,18 @@ export function DocumentCard({ document }: DocumentCardProps) {
   };
 
   return (
-    <>
+    <div className="group relative h-full">
       <Link
         to={`/documents/${document.id}`}
-        className="group relative flex flex-col justify-between rounded-xl border border-surface-border bg-surface-elevated p-5 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-primary-500/50 hover:shadow-md"
+        className="flex h-full flex-col justify-between rounded-xl border border-surface-border bg-surface-elevated p-5 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-primary-500/50 hover:shadow-md"
       >
         <div className="flex items-start justify-between gap-4">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 min-w-0 flex-1 pr-10">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary-500/10 text-primary-500 transition-colors group-hover:bg-primary-500 group-hover:text-white">
               <FileText className="h-5 w-5" />
             </div>
-            <div>
-              <h3 className="font-semibold text-text-primary line-clamp-1 group-hover:text-primary-400 transition-colors">
+            <div className="min-w-0 flex-1">
+              <h3 className="font-semibold text-text-primary truncate group-hover:text-primary-400 transition-colors">
                 {document.title}
               </h3>
               <div className="mt-1 flex items-center gap-2 text-xs text-text-muted">
@@ -65,16 +65,6 @@ export function DocumentCard({ document }: DocumentCardProps) {
               </div>
             </div>
           </div>
-
-          {isOwner && (
-            <button
-              onClick={handleDelete}
-              className="rounded p-2 text-text-muted opacity-0 transition-all duration-200 hover:bg-danger/10 hover:text-danger group-hover:opacity-100"
-              title="Delete document"
-            >
-              <Trash2 className="h-4 w-4" />
-            </button>
-          )}
         </div>
 
         <div className="mt-6 flex items-center justify-between border-t border-surface-border/50 pt-4">
@@ -86,6 +76,16 @@ export function DocumentCard({ document }: DocumentCardProps) {
         </div>
       </Link>
 
+      {isOwner && (
+        <button
+          onClick={handleDelete}
+          className="absolute right-3 top-3 z-10 rounded-md p-2 text-text-muted transition-all duration-200 hover:bg-danger/10 hover:text-danger"
+          title="Delete document"
+        >
+          <Trash2 className="h-4 w-4" />
+        </button>
+      )}
+
       <DeleteModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
@@ -93,6 +93,6 @@ export function DocumentCard({ document }: DocumentCardProps) {
         isDeleting={isDeleting}
         title={document.title}
       />
-    </>
+    </div>
   );
 }

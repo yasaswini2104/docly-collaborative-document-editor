@@ -1,12 +1,5 @@
-/**
- * pages/LoginPage.tsx — Sign-in page.
- *
- * Uses TanStack Query's useMutation for the login API call.
- * On success the token + user are stored in AuthContext (memory only)
- * and the user is redirected to the page they originally tried to reach.
- */
 import { type FormEvent, useState } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router';
+import { useNavigate, Link } from 'react-router';
 import { useMutation } from '@tanstack/react-query';
 import { apiClient } from '../lib/axios';
 import { useAuth } from '../hooks/useAuth';
@@ -14,13 +7,9 @@ import type { AuthUser } from '../contexts/AuthContext';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-interface LoginResponse {
+interface SignupResponse {
   token: string;
   user: AuthUser;
-}
-
-interface LocationState {
-  from?: { pathname: string };
 }
 
 // ─── Spinner icon ─────────────────────────────────────────────────────────────
@@ -46,38 +35,54 @@ function Spinner() {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-export default function LoginPage() {
+export default function SignupPage() {
   const navigate = useNavigate();
-  const location = useLocation();
   const { login } = useAuth();
 
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [validationError, setValidationError] = useState<string | null>(null);
 
-  // Redirect back to the originally requested page after login
-  const from = (location.state as LocationState | null)?.from?.pathname ?? '/documents';
-
-  const loginMutation = useMutation({
-    mutationFn: (credentials: { email: string; password: string }) =>
+  const signupMutation = useMutation({
+    mutationFn: (credentials: { name: string; email: string; password: string }) =>
       apiClient
-        .post<LoginResponse>('/api/auth/login', credentials)
+        .post<SignupResponse>('/api/auth/register', credentials)
         .then((r) => r.data),
     onSuccess: (data) => {
       login(data.token, data.user);
-      void navigate(from, { replace: true });
+      void navigate('/documents', { replace: true });
     },
   });
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!email.trim() || !password) return;
-    loginMutation.mutate({ email: email.trim(), password });
+    setValidationError(null);
+
+    if (!name.trim() || !email.trim() || !password || !confirmPassword) {
+      setValidationError('All fields are required.');
+      return;
+    }
+
+    if (password.length < 8) {
+      setValidationError('Password must be at least 8 characters long.');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setValidationError('Passwords do not match.');
+      return;
+    }
+
+    signupMutation.mutate({ name: name.trim(), email: email.trim(), password });
   };
 
   // Extract a human-readable error message from the mutation error
   const errorMessage = (() => {
-    if (!loginMutation.isError) return null;
-    const err = loginMutation.error;
+    if (validationError) return validationError;
+    if (!signupMutation.isError) return null;
+    const err = signupMutation.error;
     if (
       typeof err === 'object' &&
       err !== null &&
@@ -109,7 +114,7 @@ export default function LoginPage() {
       />
 
       {/* ── Card ─────────────────────────────────────────────────────────── */}
-      <div className="animate-fade-in-up w-full max-w-sm">
+      <div className="animate-fade-in-up w-full max-w-sm relative z-10">
         <div className="rounded-2xl border border-surface-border bg-surface-elevated/80 p-8 shadow-lg backdrop-blur-xl">
 
           {/* Header */}
@@ -117,7 +122,7 @@ export default function LoginPage() {
             <h1 className="bg-gradient-to-br from-primary-300 to-primary-500 bg-clip-text text-3xl font-bold text-transparent">
               DocEditor
             </h1>
-            <p className="mt-2 text-sm text-text-muted">Sign in to your workspace</p>
+            <p className="mt-2 text-sm text-text-muted">Create your workspace account</p>
           </div>
 
           {/* Error banner */}
@@ -131,23 +136,44 @@ export default function LoginPage() {
           )}
 
           {/* Form */}
-          <form id="login-form" onSubmit={handleSubmit} noValidate className="space-y-5">
+          <form id="signup-form" onSubmit={handleSubmit} noValidate className="space-y-4">
+            {/* Name */}
+            <div>
+              <label
+                htmlFor="signup-name"
+                className="mb-1 block text-sm font-medium text-text-secondary"
+              >
+                Full Name
+              </label>
+              <input
+                id="signup-name"
+                type="text"
+                autoComplete="name"
+                placeholder="John Doe"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                disabled={signupMutation.isPending}
+                className={inputClass}
+                required
+              />
+            </div>
+
             {/* Email */}
             <div>
               <label
-                htmlFor="login-email"
-                className="mb-1.5 block text-sm font-medium text-text-secondary"
+                htmlFor="signup-email"
+                className="mb-1 block text-sm font-medium text-text-secondary"
               >
                 Email address
               </label>
               <input
-                id="login-email"
+                id="signup-email"
                 type="email"
                 autoComplete="email"
-                placeholder="alice@example.com"
+                placeholder="john@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                disabled={loginMutation.isPending}
+                disabled={signupMutation.isPending}
                 className={inputClass}
                 required
               />
@@ -156,19 +182,40 @@ export default function LoginPage() {
             {/* Password */}
             <div>
               <label
-                htmlFor="login-password"
-                className="mb-1.5 block text-sm font-medium text-text-secondary"
+                htmlFor="signup-password"
+                className="mb-1 block text-sm font-medium text-text-secondary"
               >
                 Password
               </label>
               <input
-                id="login-password"
+                id="signup-password"
                 type="password"
-                autoComplete="current-password"
+                autoComplete="new-password"
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                disabled={loginMutation.isPending}
+                disabled={signupMutation.isPending}
+                className={inputClass}
+                required
+              />
+            </div>
+
+            {/* Confirm Password */}
+            <div>
+              <label
+                htmlFor="signup-confirm-password"
+                className="mb-1 block text-sm font-medium text-text-secondary"
+              >
+                Confirm Password
+              </label>
+              <input
+                id="signup-confirm-password"
+                type="password"
+                autoComplete="new-password"
+                placeholder="••••••••"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                disabled={signupMutation.isPending}
                 className={inputClass}
                 required
               />
@@ -176,32 +223,32 @@ export default function LoginPage() {
 
             {/* Submit */}
             <button
-              id="login-submit"
+              id="signup-submit"
               type="submit"
-              disabled={loginMutation.isPending || !email.trim() || !password}
+              disabled={signupMutation.isPending}
               className={[
-                'flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5',
+                'mt-2 flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5',
                 'bg-gradient-to-r from-primary-500 to-primary-600 font-semibold text-white',
                 'transition-all duration-150',
                 'hover:-translate-y-px hover:from-primary-400 hover:to-primary-500 hover:shadow-md',
                 'disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-none',
               ].join(' ')}
             >
-              {loginMutation.isPending ? (
+              {signupMutation.isPending ? (
                 <>
                   <Spinner />
-                  Signing in…
+                  Creating account…
                 </>
               ) : (
-                'Sign in'
+                'Sign up'
               )}
             </button>
           </form>
-
+          
           <div className="mt-6 text-center text-sm">
-            <span className="text-text-secondary">Don't have an account? </span>
-            <Link to="/signup" className="font-medium text-primary-500 hover:text-primary-400 transition-colors">
-              Sign up
+            <span className="text-text-secondary">Already have an account? </span>
+            <Link to="/login" className="font-medium text-primary-500 hover:text-primary-400 transition-colors">
+              Log in
             </Link>
           </div>
         </div>

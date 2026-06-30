@@ -15,8 +15,8 @@ export function DocumentList({
 }: DocumentListProps) {
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {[1, 2, 3, 4].map((i) => (
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {[1, 2, 3].map((i) => (
           <div key={i} className="flex h-[140px] flex-col justify-between rounded-xl border border-surface-border bg-surface-elevated p-5 shadow-sm">
             <div className="flex gap-4">
               <div className="h-10 w-10 shrink-0 animate-pulse rounded-lg bg-surface-hover" />
@@ -47,7 +47,7 @@ export function DocumentList({
   }
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 animate-fade-in-up">
+    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 animate-fade-in-up">
       {documents.map((doc) => (
         <DocumentCard key={doc.id} document={doc} />
       ))}
