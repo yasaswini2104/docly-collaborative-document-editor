@@ -105,25 +105,29 @@ export default function LandingPage() {
       </main>
 
       {/* 4. Footer */}
-      <footer className="border-t border-surface-border px-6 py-8 sm:px-8">
-        <div className="mx-auto max-w-7xl flex flex-col md:flex-row justify-between items-center gap-4 mb-4">
-          <div className="text-sm font-medium text-text-primary">
-            Docly — Collaborative Document Editor
-          </div>
-          <a
-            href="https://github.com/yasaswini2104"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm text-text-secondary hover:text-text-primary transition-colors"
-          >
-            GitHub
-          </a>
-          <div className="text-sm text-text-secondary">
-            &copy; 2026 Docly
+      <footer className="mt-auto">
+        <div className="border-t border-surface-border px-6 py-8 sm:px-8">
+          <div className="mx-auto max-w-7xl flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="text-sm font-medium text-text-primary">
+              Docly — Collaborative Document Editor
+            </div>
+            <a
+              href="https://github.com/yasaswini2104"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-text-secondary hover:text-text-primary transition-colors"
+            >
+              GitHub
+            </a>
+            <div className="text-sm text-text-secondary">
+              &copy; 2026 Docly
+            </div>
           </div>
         </div>
-        <div className="text-center text-xs text-text-muted mt-4">
-          Implemented by Yasaswini
+        <div className="border-t border-surface-border py-6 px-6">
+          <div className="text-center text-sm text-text-muted">
+            Implemented by Yasaswini
+          </div>
         </div>
       </footer>
     </div>
