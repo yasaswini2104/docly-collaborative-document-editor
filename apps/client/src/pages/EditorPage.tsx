@@ -29,24 +29,8 @@ export default function EditorPage() {
     }
   }, [document]);
 
-  if (isLoading) {
-    return (
-      <div className="flex min-h-[400px] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-surface-border border-t-primary-500" />
-      </div>
-    );
-  }
-
-  if (isError || !document) {
-    return (
-      <div className="rounded-lg border border-danger/30 bg-danger/10 p-4 text-danger">
-        Failed to load document. It might not exist, or you don't have access.
-      </div>
-    );
-  }
-
-  const isReadOnly = document.effectiveRole === 'VIEWER';
-  const isOwner = document.effectiveRole === 'OWNER';
+  const isReadOnly = document?.effectiveRole === 'VIEWER';
+  const isOwner = document?.effectiveRole === 'OWNER';
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTitle = e.target.value;
@@ -55,7 +39,7 @@ export default function EditorPage() {
     if (titleTimeoutRef.current) clearTimeout(titleTimeoutRef.current);
     
     titleTimeoutRef.current = setTimeout(() => {
-      if (newTitle !== document.title && newTitle.trim().length > 0) {
+      if (document && newTitle !== document.title && newTitle.trim().length > 0) {
         handleSave({ title: newTitle.trim() });
       }
     }, 1000);
@@ -65,8 +49,8 @@ export default function EditorPage() {
     handleSave({ content });
   };
 
-  const handleSave = (updates: { title?: string; content?: any }) => {
-    if (isReadOnly) return;
+  const handleSave = (updates: { title?: string; content?: any } = {}) => {
+    if (isReadOnly || !document) return;
     
     setSaveStatus('saving');
     updateDocument(
@@ -83,9 +67,37 @@ export default function EditorPage() {
     );
   };
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        handleSave();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isReadOnly, document]);
+
   const handleUploadSuccess = () => {
     setUploadKey(k => k + 1); // Force TipTapEditor to remount and pick up new content
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-[400px] items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-surface-border border-t-primary-500" />
+      </div>
+    );
+  }
+
+  if (isError || !document) {
+    return (
+      <div className="rounded-lg border border-danger/30 bg-danger/10 p-4 text-danger">
+        Failed to load document. It might not exist, or you don't have access.
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-5xl">

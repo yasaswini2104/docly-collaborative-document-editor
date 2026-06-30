@@ -74,3 +74,17 @@ export function useUploadDocument() {
     },
   });
 }
+
+export function useDeleteDocument() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      await apiClient.delete(`/api/documents/${id}`);
+    },
+    onSuccess: (_, id) => {
+      queryClient.removeQueries({ queryKey: documentDetailKeys.detail(id) });
+      queryClient.invalidateQueries({ queryKey: documentKeys.lists() });
+    },
+  });
+}

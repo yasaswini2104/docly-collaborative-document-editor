@@ -4,14 +4,6 @@ import { DocumentList } from '../components/documents/DocumentList';
 export default function SharedDocumentsPage() {
   const { data, isLoading, isError } = useDocuments();
 
-  if (isLoading) {
-    return (
-      <div className="flex min-h-[400px] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-surface-border border-t-primary-500" />
-      </div>
-    );
-  }
-
   if (isError) {
     return (
       <div className="rounded-lg border border-danger/30 bg-danger/10 p-4 text-danger">
@@ -24,18 +16,17 @@ export default function SharedDocumentsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-text-primary">Shared Documents</h1>
-          <p className="mt-1 text-sm text-text-secondary">
-            Documents shared with you by other users.
-          </p>
-        </div>
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight text-text-primary">Shared with me</h1>
+        <p className="mt-1 text-sm text-text-secondary">
+          Documents that others have shared with you.
+        </p>
       </div>
 
-      <DocumentList
-        documents={shared}
-        emptyMessage="No documents have been shared with you yet."
+      <DocumentList 
+        documents={shared} 
+        isLoading={isLoading} 
+        emptyMessage="No documents have been shared with you." 
       />
     </div>
   );

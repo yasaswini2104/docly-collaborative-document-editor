@@ -1,21 +1,14 @@
-import { Plus, ArrowRight, Loader2 } from 'lucide-react';
+import { Plus, ArrowRight, Loader2, Clock, Users } from 'lucide-react';
 import { Link, useNavigate } from 'react-router';
 import { useDocuments } from '../hooks/useDocuments';
 import { useCreateDocument } from '../hooks/useDocument';
 import { DocumentList } from '../components/documents/DocumentList';
+import toast from 'react-hot-toast';
 
 export default function DashboardPage() {
   const navigate = useNavigate();
   const { data, isLoading, isError } = useDocuments();
   const { mutate: createDocument, isPending: isCreating } = useCreateDocument();
-
-  if (isLoading) {
-    return (
-      <div className="flex min-h-[400px] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-surface-border border-t-primary-500" />
-      </div>
-    );
-  }
 
   if (isError) {
     return (
@@ -33,8 +26,12 @@ export default function DashboardPage() {
   const handleCreateDocument = () => {
     createDocument('Untitled Document', {
       onSuccess: (newDoc) => {
+        toast.success('Document created');
         navigate(`/documents/${newDoc.id}`);
       },
+      onError: () => {
+        toast.error('Failed to create document');
+      }
     });
   };
 
@@ -59,39 +56,43 @@ export default function DashboardPage() {
 
       <section>
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-text-primary">Recent Owned Documents</h2>
-          {owned.length > 4 && (
-            <Link
-              to="/documents/owned"
-              className="group flex items-center gap-1 text-sm font-medium text-primary-500 hover:text-primary-400"
-            >
-              View all
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </Link>
-          )}
+          <h2 className="text-lg font-semibold text-text-primary flex items-center gap-2">
+            <Clock className="h-5 w-5 text-primary-500" />
+            Recent Documents
+          </h2>
+          <Link
+            to="/documents/owned"
+            className="group flex items-center gap-1 text-sm font-medium text-primary-500 hover:text-primary-600"
+          >
+            View all
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </Link>
         </div>
-        <DocumentList
-          documents={recentOwned}
-          emptyMessage="You haven't created any documents yet."
+        <DocumentList 
+          documents={recentOwned} 
+          isLoading={isLoading} 
+          emptyMessage="You haven't created any documents yet. Click 'New Document' to get started." 
         />
       </section>
 
       <section>
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-text-primary">Recently Shared With You</h2>
-          {shared.length > 4 && (
-            <Link
-              to="/documents/shared"
-              className="group flex items-center gap-1 text-sm font-medium text-primary-500 hover:text-primary-400"
-            >
-              View all
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </Link>
-          )}
+          <h2 className="text-lg font-semibold text-text-primary flex items-center gap-2">
+            <Users className="h-5 w-5 text-secondary-500" />
+            Shared with me
+          </h2>
+          <Link
+            to="/documents/shared"
+            className="group flex items-center gap-1 text-sm font-medium text-primary-500 hover:text-primary-600"
+          >
+            View all
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </Link>
         </div>
-        <DocumentList
-          documents={recentShared}
-          emptyMessage="No documents have been shared with you yet."
+        <DocumentList 
+          documents={recentShared} 
+          isLoading={isLoading} 
+          emptyMessage="No documents have been shared with you." 
         />
       </section>
     </div>

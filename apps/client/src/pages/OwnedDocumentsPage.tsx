@@ -3,19 +3,12 @@ import { useNavigate } from 'react-router';
 import { useDocuments } from '../hooks/useDocuments';
 import { useCreateDocument } from '../hooks/useDocument';
 import { DocumentList } from '../components/documents/DocumentList';
+import toast from 'react-hot-toast';
 
 export default function OwnedDocumentsPage() {
   const navigate = useNavigate();
   const { data, isLoading, isError } = useDocuments();
   const { mutate: createDocument, isPending: isCreating } = useCreateDocument();
-
-  if (isLoading) {
-    return (
-      <div className="flex min-h-[400px] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-surface-border border-t-primary-500" />
-      </div>
-    );
-  }
 
   if (isError) {
     return (
@@ -30,8 +23,12 @@ export default function OwnedDocumentsPage() {
   const handleCreateDocument = () => {
     createDocument('Untitled Document', {
       onSuccess: (newDoc) => {
+        toast.success('Document created');
         navigate(`/documents/${newDoc.id}`);
       },
+      onError: () => {
+        toast.error('Failed to create document');
+      }
     });
   };
 
@@ -56,7 +53,8 @@ export default function OwnedDocumentsPage() {
 
       <DocumentList
         documents={owned}
-        emptyMessage="You haven't created any documents yet. Create one to get started."
+        isLoading={isLoading}
+        emptyMessage="You haven't created any documents yet. Click 'New Document' to get started."
       />
     </div>
   );
