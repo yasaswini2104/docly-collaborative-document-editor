@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { format } from 'date-fns';
-import { ArrowLeft, Save, Loader2, CheckCircle2, Upload } from 'lucide-react';
+import { ArrowLeft, Save, Loader2, CheckCircle2, Upload, Users } from 'lucide-react';
 import { useDocument, useUpdateDocument } from '../hooks/useDocument';
 import { TipTapEditor } from '../components/editor/TipTapEditor';
 import { UploadModal } from '../components/documents/UploadModal';
+import { ShareModal } from '../components/documents/ShareModal';
 
 type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
@@ -18,6 +19,7 @@ export default function EditorPage() {
   const [title, setTitle] = useState('');
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [uploadKey, setUploadKey] = useState(0); // Used to force remount of TipTapEditor
   const titleTimeoutRef = useRef<NodeJS.Timeout>();
 
@@ -44,6 +46,7 @@ export default function EditorPage() {
   }
 
   const isReadOnly = document.effectiveRole === 'VIEWER';
+  const isOwner = document.effectiveRole === 'OWNER';
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTitle = e.target.value;
@@ -134,15 +137,27 @@ export default function EditorPage() {
             )}
           </div>
           
-          {!isReadOnly && (
-            <button
-              onClick={() => setIsUploadModalOpen(true)}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-surface-border bg-surface px-3 py-1.5 text-sm font-medium text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors"
-            >
-              <Upload className="h-4 w-4" />
-              Import
-            </button>
-          )}
+          <div className="flex items-center gap-2">
+            {!isReadOnly && (
+              <button
+                onClick={() => setIsUploadModalOpen(true)}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-surface-border bg-surface px-3 py-1.5 text-sm font-medium text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors"
+              >
+                <Upload className="h-4 w-4" />
+                Import
+              </button>
+            )}
+
+            {isOwner && (
+              <button
+                onClick={() => setIsShareModalOpen(true)}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-primary-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-primary-600 transition-colors"
+              >
+                <Users className="h-4 w-4" />
+                Share
+              </button>
+            )}
+          </div>
 
           {isReadOnly && (
             <span className="rounded-full bg-surface-border px-2.5 py-1 text-xs font-medium text-text-secondary">
@@ -164,6 +179,12 @@ export default function EditorPage() {
         isOpen={isUploadModalOpen}
         onClose={() => setIsUploadModalOpen(false)}
         onUploadSuccess={handleUploadSuccess}
+      />
+
+      <ShareModal
+        documentId={document.id}
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
       />
     </div>
   );

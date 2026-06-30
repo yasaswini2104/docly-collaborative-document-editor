@@ -10,6 +10,7 @@ import cors from 'cors';
 import { authRouter } from './modules/auth/auth.router.js';
 import { authenticate } from './middleware/authenticate.js';
 import { documentsRouter } from './modules/documents/document.router.js';
+import { usersRouter } from './modules/users/users.router.js';
 
 export function createApp(): Express {
   const app = express();
@@ -32,6 +33,7 @@ export function createApp(): Express {
   // ── Feature routers ────────────────────────────────────────────────────────
   app.use('/api/auth', authRouter);
   app.use('/api/documents', documentsRouter);
+  app.use('/api/users', usersRouter);
 
   // Protected smoke-test endpoint — returns the authenticated user's profile.
   // Real document routes will be added in subsequent modules.
