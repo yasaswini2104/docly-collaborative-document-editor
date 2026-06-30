@@ -1,17 +1,13 @@
 import { useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
-import { useNavigate } from 'react-router';
-import { LandingNavbar } from '../components/landing/LandingNavbar';
-import { HeroSection } from '../components/landing/HeroSection';
-import { FeaturesSection } from '../components/landing/FeaturesSection';
-import { HowItWorksSection } from '../components/landing/HowItWorksSection';
-import { ProductPreviewSection } from '../components/landing/ProductPreviewSection';
-import { CTASection } from '../components/landing/CTASection';
-import { Footer } from '../components/landing/Footer';
+import { useNavigate, Link } from 'react-router';
+import { Sun, Moon, Type, Share2, Upload } from 'lucide-react';
+import { useTheme } from '../contexts/ThemeContext';
 
 export default function LandingPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { theme, setTheme } = useTheme();
 
   // If already logged in, redirect to dashboard
   useEffect(() => {
@@ -25,16 +21,108 @@ export default function LandingPage() {
   }
 
   return (
-    <div className="min-h-dvh bg-surface font-sans text-text-primary selection:bg-primary-500/30">
-      <LandingNavbar />
-      <main>
-        <HeroSection />
-        <FeaturesSection />
-        <HowItWorksSection />
-        <ProductPreviewSection />
-        <CTASection />
+    <div className="min-h-dvh flex flex-col bg-surface font-sans text-text-primary">
+      {/* 1. Navbar */}
+      <header className="flex h-16 items-center justify-between border-b border-surface-border px-6 sm:px-8">
+        <div className="text-xl font-bold text-text-primary">
+          Docly
+        </div>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            className="rounded-lg p-2 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors"
+            aria-label="Toggle theme"
+          >
+            {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+          </button>
+          <Link
+            to="/login"
+            className="text-sm font-semibold text-text-primary hover:text-primary-500 transition-colors"
+          >
+            Log in
+          </Link>
+          <Link
+            to="/signup"
+            className="rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 transition-colors"
+          >
+            Sign up
+          </Link>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="flex-1">
+        {/* 2. Hero */}
+        <section className="px-6 py-24 sm:px-8 sm:py-32 lg:px-12 text-center max-w-4xl mx-auto">
+          <h1 className="text-4xl font-bold tracking-tight text-text-primary sm:text-5xl lg:text-6xl">
+            Write and share documents, together.
+          </h1>
+          <p className="mt-6 text-lg text-text-secondary">
+            A simple, fast document editor with rich-text formatting and easy sharing — built for small teams.
+          </p>
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link
+              to="/signup"
+              className="w-full sm:w-auto rounded-lg bg-primary-600 px-8 py-3 text-base font-semibold text-white shadow-sm hover:bg-primary-500 transition-colors"
+            >
+              Get Started
+            </Link>
+            <Link
+              to="/login"
+              className="w-full sm:w-auto rounded-lg border border-surface-border bg-surface px-8 py-3 text-base font-semibold text-text-primary shadow-sm hover:bg-surface-hover transition-colors"
+            >
+              Log In
+            </Link>
+          </div>
+        </section>
+
+        {/* 3. Feature strip */}
+        <section className="px-6 pb-24 sm:px-8 sm:pb-32 lg:px-12 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-left">
+            <div>
+              <Type className="h-8 w-8 text-primary-500 mb-4" />
+              <h3 className="text-lg font-semibold text-text-primary mb-2">Rich Text Editing</h3>
+              <p className="text-text-secondary">
+                Bold, italic, headings, and lists in a clean writing surface.
+              </p>
+            </div>
+            <div>
+              <Share2 className="h-8 w-8 text-primary-500 mb-4" />
+              <h3 className="text-lg font-semibold text-text-primary mb-2">Easy Sharing</h3>
+              <p className="text-text-secondary">
+                Share documents with teammates and control view or edit access.
+              </p>
+            </div>
+            <div>
+              <Upload className="h-8 w-8 text-primary-500 mb-4" />
+              <h3 className="text-lg font-semibold text-text-primary mb-2">File Import</h3>
+              <p className="text-text-secondary">
+                Upload .txt or .md files and start editing instantly.
+              </p>
+            </div>
+          </div>
+        </section>
       </main>
-      <Footer />
+
+      {/* 4. Footer */}
+      <footer className="border-t border-surface-border px-6 py-8 sm:px-8">
+        <div className="mx-auto max-w-7xl flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="text-sm font-medium text-text-primary">
+            Docly — Collaborative Document Editor
+          </div>
+          <a
+            href="https://github.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-text-secondary hover:text-text-primary transition-colors"
+          >
+            GitHub
+          </a>
+          <div className="text-sm text-text-secondary">
+            &copy; 2026 Docly
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
