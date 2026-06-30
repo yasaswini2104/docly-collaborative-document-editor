@@ -18,7 +18,7 @@ export function createApp(): Express {
   // ── Global middleware ──────────────────────────────────────────────────
   app.use(
     cors({
-      origin: process.env['VITE_API_BASE_URL'] ?? 'http://localhost:3000',
+      origin: process.env['FRONTEND_URL'] ?? 'http://localhost:3000',
       credentials: true,
     }),
   );
