@@ -50,7 +50,7 @@ This submission delivers **Docly**, a production-ready, SaaS-style collaborative
 - Implement robust cursor-based pagination for the document dashboard.
 
 ## Live Deployment
-[Placeholder for Live URL]
+https://docly-collaborative-document-editor.vercel.app/
 
 ## Walkthrough Video
 [Placeholder for Video URL]
