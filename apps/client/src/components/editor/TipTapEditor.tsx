@@ -24,7 +24,7 @@ export function TipTapEditor({ initialContent, onSave, disabled }: TipTapEditorP
     editable: !disabled,
     editorProps: {
       attributes: {
-        class: 'prose prose-slate dark:prose-invert max-w-none focus:outline-none min-h-[500px] px-8 py-6',
+        class: 'prose dark:prose-invert max-w-none focus:outline-none min-h-[500px] px-8 py-6 text-text-primary',
       },
     },
     onUpdate: ({ editor }) => {
