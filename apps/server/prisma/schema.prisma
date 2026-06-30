@@ -10,8 +10,74 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ── Models will be added in subsequent modules ─────────────────────────────
-//
-// Placeholder comment block only — no business-logic models are defined here.
-// The User and Document models will be introduced in the Auth and Document
-// modules respectively.
+// ─────────────────────────────────────────────────────────────────────────────
+// Enums
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum Role {
+  VIEWER
+  EDITOR
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// User
+// ─────────────────────────────────────────────────────────────────────────────
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  name         String
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  /// Documents this user owns
+  ownedDocuments Document[]
+
+  /// Documents shared with this user (excluding owned)
+  permissions DocumentPermission[]
+
+  @@map("users")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Document
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Document {
+  id        String   @id @default(cuid())
+  title     String   @db.VarChar(255)
+  /// TipTap JSON stored as a MySQL JSON column
+  content   Json     @default("{}")
+  ownerId   String   @map("owner_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  owner       User                 @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  permissions DocumentPermission[]
+
+  @@index([ownerId])
+  @@map("documents")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DocumentPermission
+// Tracks which non-owner users can access a document and with what role.
+// The owner's access is implicit via Document.ownerId — no row needed here.
+// ─────────────────────────────────────────────────────────────────────────────
+
+model DocumentPermission {
+  id         String   @id @default(cuid())
+  documentId String   @map("document_id")
+  userId     String   @map("user_id")
+  role       Role     @default(VIEWER)
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  /// A user can only have one permission row per document
+  @@unique([documentId, userId])
+  @@index([userId])
+  @@map("document_permissions")
+}
