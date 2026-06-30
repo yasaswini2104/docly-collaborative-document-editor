@@ -21,7 +21,7 @@ export function HowItWorksSection() {
 
   return (
     <section id="how-it-works" className="py-24 bg-surface-elevated/30">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl font-bold tracking-tight text-text-primary sm:text-4xl">
             How it works

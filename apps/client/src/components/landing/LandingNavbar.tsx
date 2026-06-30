@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router';
 import { Menu, X, Sun, Moon } from 'lucide-react';
-import { useTheme } from '../../../contexts/ThemeContext';
+import { useTheme } from '../../contexts/ThemeContext';
 
 export function LandingNavbar() {
   const [isScrolled, setIsScrolled] = useState(false);

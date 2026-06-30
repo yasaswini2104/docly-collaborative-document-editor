@@ -3,8 +3,8 @@ import { Link } from 'react-router';
 export function CTASection() {
   return (
     <section className="py-24 bg-surface">
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
-        <div className="rounded-3xl bg-surface-elevated border border-surface-border p-10 sm:p-16 shadow-xl relative overflow-hidden">
+      <div className="mx-auto max-w-4xl px-6 sm:px-8 lg:px-12 text-center">
+        <div className="rounded-3xl bg-surface-elevated border border-surface-border p-8 sm:p-16 shadow-xl relative overflow-hidden">
           {/* Subtle gradient background element */}
           <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 to-transparent pointer-events-none"></div>
           

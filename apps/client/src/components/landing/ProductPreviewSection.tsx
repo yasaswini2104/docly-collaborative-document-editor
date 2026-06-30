@@ -3,7 +3,7 @@ import { Users, FileText, Search, Settings, MoreHorizontal, LayoutDashboard, Che
 export function ProductPreviewSection() {
   return (
     <section id="preview" className="py-24 bg-surface">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl font-bold tracking-tight text-text-primary sm:text-4xl">
             A beautiful, focused workspace
@@ -15,7 +15,7 @@ export function ProductPreviewSection() {
 
         {/* Larger Dashboard/Editor Mockup */}
         <div className="mx-auto w-full rounded-2xl border border-surface-border bg-surface-elevated shadow-2xl overflow-hidden ring-1 ring-surface-border/50 max-w-6xl animate-fade-in-up">
-          <div className="flex h-[600px] flex-col md:flex-row">
+          <div className="flex h-auto md:h-[600px] flex-col md:flex-row">
             
             {/* Sidebar Mockup */}
             <div className="hidden md:flex w-64 flex-col border-r border-surface-border bg-surface">
