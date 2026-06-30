@@ -50,5 +50,28 @@ export function useCreateDocument() {
       // Prime the cache for the detail view so the editor loads instantly
       queryClient.setQueryData(documentDetailKeys.detail(data.id), data);
     },
+    },
+  });
+}
+
+export function useUploadDocument() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, file }: { id: string; file: File }) => {
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      const response = await apiClient.post<Document>(`/api/documents/${id}/upload`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(documentDetailKeys.detail(data.id), data);
+      queryClient.invalidateQueries({ queryKey: documentKeys.lists() });
+    },
   });
 }

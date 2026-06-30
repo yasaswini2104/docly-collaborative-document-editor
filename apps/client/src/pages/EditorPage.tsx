@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { format } from 'date-fns';
-import { ArrowLeft, Save, Loader2, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Save, Loader2, CheckCircle2, Upload } from 'lucide-react';
 import { useDocument, useUpdateDocument } from '../hooks/useDocument';
 import { TipTapEditor } from '../components/editor/TipTapEditor';
+import { UploadModal } from '../components/documents/UploadModal';
 
 type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
@@ -16,6 +17,8 @@ export default function EditorPage() {
 
   const [title, setTitle] = useState('');
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [uploadKey, setUploadKey] = useState(0); // Used to force remount of TipTapEditor
   const titleTimeoutRef = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
@@ -77,6 +80,10 @@ export default function EditorPage() {
     );
   };
 
+  const handleUploadSuccess = () => {
+    setUploadKey(k => k + 1); // Force TipTapEditor to remount and pick up new content
+  };
+
   return (
     <div className="mx-auto max-w-5xl">
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -127,6 +134,16 @@ export default function EditorPage() {
             )}
           </div>
           
+          {!isReadOnly && (
+            <button
+              onClick={() => setIsUploadModalOpen(true)}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-surface-border bg-surface px-3 py-1.5 text-sm font-medium text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors"
+            >
+              <Upload className="h-4 w-4" />
+              Import
+            </button>
+          )}
+
           {isReadOnly && (
             <span className="rounded-full bg-surface-border px-2.5 py-1 text-xs font-medium text-text-secondary">
               Read Only
@@ -136,9 +153,17 @@ export default function EditorPage() {
       </div>
 
       <TipTapEditor 
+        key={uploadKey}
         initialContent={document.content} 
         onSave={handleContentSave} 
         disabled={isReadOnly}
+      />
+
+      <UploadModal
+        documentId={document.id}
+        isOpen={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
+        onUploadSuccess={handleUploadSuccess}
       />
     </div>
   );

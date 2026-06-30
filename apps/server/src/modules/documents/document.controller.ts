@@ -14,6 +14,7 @@ import {
   shareDocumentSchema,
   updatePermissionSchema,
 } from './document.schema.js';
+import { parseTextToTipTapJSON, tipTapDocumentSchema } from './upload.service.js';
 import {
   createDocument,
   listDocuments,
@@ -139,13 +140,46 @@ export async function revokePermissionController(req: Request, res: Response) {
   }
 }
 
-// ─── Upload scaffold ──────────────────────────────────────────────────────────
+// ─── Upload implementation ────────────────────────────────────────────────────
 
-export function uploadScaffoldController(_req: Request, res: Response) {
-  // Upload parsing and TipTap conversion are implemented in the Upload module.
-  // This scaffold confirms routing + access control are in place.
-  res.status(501).json({
-    error: 'Not implemented',
-    message: 'File upload is handled by the Upload module (next task).',
-  });
+export async function uploadDocumentController(req: Request, res: Response) {
+  if (!req.file) {
+    res.status(400).json({ error: 'No file uploaded.' });
+    return;
+  }
+
+  // Validate extension
+  const fileName = req.file.originalname.toLowerCase();
+  if (!fileName.endsWith('.txt') && !fileName.endsWith('.md')) {
+    res.status(400).json({ error: 'Only .txt and .md files are supported.' });
+    return;
+  }
+
+  // Validate MIME (Multer gets this from the client, so it's a basic check, we don't do magic-bytes)
+  const mime = req.file.mimetype;
+  if (!mime.includes('text/plain') && !mime.includes('markdown') && !mime.includes('octet-stream')) {
+    res.status(400).json({ error: 'Invalid file type. Must be plain text or markdown.' });
+    return;
+  }
+
+  try {
+    const textContent = req.file.buffer.toString('utf-8');
+    const tiptapJson = parseTextToTipTapJSON(textContent);
+    
+    // Validate resulting structure
+    const parsedTipTap = tipTapDocumentSchema.safeParse(tiptapJson);
+    if (!parsedTipTap.success) {
+      zodError(res, parsedTipTap.error.issues);
+      return;
+    }
+
+    // Update document
+    const doc = await updateDocument(req.document!.id, {
+      content: parsedTipTap.data,
+    });
+
+    res.json(doc);
+  } catch (err) {
+    if (!handleDocumentError(res, err)) throw err;
+  }
 }

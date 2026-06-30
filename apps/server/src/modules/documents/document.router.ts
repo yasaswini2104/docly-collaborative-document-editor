@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { authenticate } from '../../middleware/authenticate.js';
 import { requireDocumentAccess } from '../../middleware/require-document-access.js';
+import multer from 'multer';
 import {
   createDocumentController,
   listDocumentsController,
@@ -11,8 +12,13 @@ import {
   listPermissionsController,
   updatePermissionController,
   revokePermissionController,
-  uploadScaffoldController,
+  uploadDocumentController,
 } from './document.controller.js';
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 2 * 1024 * 1024 }, // 2 MB limit
+});
 
 export const documentsRouter = Router();
 
@@ -28,8 +34,13 @@ documentsRouter.get('/:id', requireDocumentAccess('any'), getDocumentController)
 documentsRouter.patch('/:id', requireDocumentAccess('editor'), updateDocumentController);
 documentsRouter.delete('/:id', requireDocumentAccess('owner'), deleteDocumentController);
 
-// ─── Upload scaffold (editor or owner) ───────────────────────────────────────
-documentsRouter.post('/:id/upload', requireDocumentAccess('editor'), uploadScaffoldController);
+// ─── Upload (editor or owner) ────────────────────────────────────────────────
+documentsRouter.post(
+  '/:id/upload',
+  requireDocumentAccess('editor'),
+  upload.single('file'),
+  uploadDocumentController,
+);
 
 // ─── Permission / sharing routes (owner only) ─────────────────────────────────
 documentsRouter.get('/:id/permissions', requireDocumentAccess('any'), listPermissionsController);
