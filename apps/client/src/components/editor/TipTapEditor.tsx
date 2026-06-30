@@ -10,7 +10,7 @@ interface TipTapEditorProps {
 }
 
 export function TipTapEditor({ initialContent, onSave, disabled }: TipTapEditorProps) {
-  const saveTimeoutRef = useRef<NodeJS.Timeout>();
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
   const editor = useEditor({
     extensions: [
@@ -60,7 +60,7 @@ export function TipTapEditor({ initialContent, onSave, disabled }: TipTapEditorP
 
   return (
     <div className="flex flex-col rounded-xl border border-surface-border bg-surface-elevated shadow-sm overflow-hidden">
-      <Toolbar editor={editor} disabled={disabled} />
+      <Toolbar editor={editor} disabled={!!disabled} />
       <div className="bg-surface-elevated flex-1 cursor-text" onClick={() => editor?.commands.focus()}>
         <EditorContent editor={editor} />
       </div>

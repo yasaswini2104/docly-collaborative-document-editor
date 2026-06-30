@@ -21,7 +21,7 @@ export default function EditorPage() {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [uploadKey, setUploadKey] = useState(0); // Used to force remount of TipTapEditor
-  const titleTimeoutRef = useRef<NodeJS.Timeout>();
+  const titleTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (document) {
