@@ -1,25 +1,23 @@
-/**
- * App.test.tsx
- *
- * createBrowserRouter (used in App.tsx) triggers React Router's fetch-based
- * navigation internals which are incompatible with jsdom's AbortSignal polyfill.
- * We test the exact same routes through renderPage() which uses createMemoryRouter
- * — identical semantics, jsdom-safe.
- */
 import { describe, it, expect } from 'vitest';
 import { screen } from '@testing-library/react';
 import { renderPage } from './render-utils';
 import LoginPage from '../pages/LoginPage';
 
-describe('App routing', () => {
-  it('renders LoginPage at /login', () => {
+describe('LoginPage', () => {
+  it('renders the heading', () => {
     renderPage(<LoginPage />, { initialPath: '/login' });
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('DocEditor');
   });
 
-  it('renders sign-in form inputs', () => {
+  it('renders email and password inputs', () => {
     renderPage(<LoginPage />, { initialPath: '/login' });
     expect(screen.getByLabelText(/email address/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
+  });
+
+  it('renders a disabled submit button when fields are empty', () => {
+    renderPage(<LoginPage />, { initialPath: '/login' });
+    const btn = screen.getByRole('button', { name: /sign in/i });
+    expect(btn).toBeDisabled();
   });
 });

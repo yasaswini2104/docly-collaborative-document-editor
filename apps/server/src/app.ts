@@ -7,6 +7,8 @@
  */
 import express, { type Express, type Request, type Response, type NextFunction } from 'express';
 import cors from 'cors';
+import { authRouter } from './modules/auth/auth.router.js';
+import { authenticate } from './middleware/authenticate.js';
 
 export function createApp(): Express {
   const app = express();
@@ -26,10 +28,14 @@ export function createApp(): Express {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
   });
 
-  // ── Feature routers ────────────────────────────────────────────────────
-  // Mounted here in subsequent modules, e.g.:
-  //   app.use('/api/auth', authRouter);
-  //   app.use('/api/documents', documentsRouter);
+  // ── Feature routers ────────────────────────────────────────────────────────
+  app.use('/api/auth', authRouter);
+
+  // Protected smoke-test endpoint — returns the authenticated user's profile.
+  // Real document routes will be added in subsequent modules.
+  app.get('/api/me', authenticate, (req: Request, res: Response) => {
+    res.json({ user: req.user });
+  });
 
   // ── 404 handler ───────────────────────────────────────────────────────
   app.use((_req: Request, res: Response) => {
